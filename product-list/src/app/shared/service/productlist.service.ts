@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { IProduct } from 'src/app/products/product';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +8,7 @@ export class ProductlistService {
 
   constructor() { }
 
-  getProductsData(){
+  getProductsData(): IProduct[] {
     return [
       {
         "productId":2,
