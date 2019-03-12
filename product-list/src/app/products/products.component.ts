@@ -3,7 +3,6 @@ import { ProductlistService } from '../shared/service/productlist.service';
 import { IProduct } from './product';
 
 @Component({
-  selector: 'app-products',
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css']
 })
@@ -13,6 +12,7 @@ export class ProductsComponent implements OnInit {
   public imageWidth: number = 50;
   public imageMargin: number = 2;
   //public listFilter: string = 'cart'; 
+  public errorMessage:string;
   
 
   
@@ -20,11 +20,13 @@ export class ProductsComponent implements OnInit {
   _listFilter: string;
 
   get listFilter(): string{
+    console.log("get listfilter");
     return this._listFilter;
   }
 
   set listFilter(value: string)
   {
+    console.log("set listFilter");
     this._listFilter = value;
     this.filteredProducts = this.listFilter? this.performFilter(this.listFilter): this.product;
   }
@@ -35,70 +37,19 @@ export class ProductsComponent implements OnInit {
   public product: IProduct[];
 
   
-//   product: IProduct[]= [
-//     {
-//       "productId":2,
-//         "productName":"Garden Cart",
-//         "productCode":"GDN-0023",
-//         "releasedate":"March 18, 2016",
-//         "description":"15 gallon capacity rolling garden",
-//         "price":20.25,
-//         "starRating":4.2,
-//         "imageurl":"assets/car.jpg"
-//     },
-//     {
-//       "productId":5,
-//         "productName":"Hammer",
-//         "productCode":"TBX-0048",
-//         "releasedate":"May 21, 2016",
-//         "description":"Curved claw steel hammer",
-//         "price":8.9,
-//         "starRating":4.8,
-//         "imageurl":"assets/hammer.png"
-//     },
-//     {
-//       "productId":8,
-//         "productName":"Leaf Rake",
-//         "productCode":"GDN-001",
-//         "releasedate":"March 19, 2016",
-//         "description":"15 gallon capacity rolling garden",
-//         "price":20.25,
-//         "starRating":3.2,
-//         "imageurl":"assets/car.jpg"
-//     },
-//     {
-//       "productId":3,
-//         "productName":"Saw",
-//         "productCode":"TBX-0048",
-//         "releasedate":"May 21, 2016",
-//         "description":"Curved claw steel hammer",
-//         "price":8.9,
-//         "starRating":3.7,
-//         "imageurl":"assets/hammer.png"
-//     },
-//     {
-//       "productId":9,
-//         "productName":"Video Game Controller",
-//         "productCode":"GDN-0023",
-//         "releasedate":"October 15, 2015",
-//         "description":"15 gallon capacity rolling garden",
-//         "price":20.25,
-//         "starRating":4.6,
-//         "imageurl":"assets/car.jpg"
-//     },
- 
-// ]
+
 
 
   //constructor(private _productService: ProductlistService) { }
   constructor(private _productService: ProductlistService) {
-    // this.filteredProducts = this.product;
-    // this.listFilter = 'cart';
+    console.log("constructor");
+    //this.filteredProducts = this.product;
+     //this.listFilter = 'cart';
    }
 
    
 performFilter(filterBy: string): IProduct[]{
-
+console.log("performFilter");
   filterBy = filterBy.toLocaleLowerCase();
   return this.product.filter((product:IProduct) => 
     product.productName.toLocaleLowerCase().indexOf(filterBy)!==-1);
@@ -106,10 +57,16 @@ performFilter(filterBy: string): IProduct[]{
 }
 
   ngOnInit() {
-
-   this.product=this._productService.getProductsData();
-   this.filteredProducts=this.product;
-
+console.log("ngOnInIt");
+  //  this.product=this._productService.getProductsData();
+  this._productService.getProductsData()
+  .subscribe(data =>{ 
+    this.product = data,
+    this.filteredProducts=this.product;
+  }, 
+  error => this.errorMessage = <any>error);
+  
+    
   }
 
 

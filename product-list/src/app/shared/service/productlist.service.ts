@@ -1,66 +1,40 @@
 import { Injectable } from '@angular/core';
 import { IProduct } from 'src/app/products/product';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { tap,catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductlistService {
 
-  constructor() { }
+  private url = '/assets/data/products.json';
 
-  getProductsData(): IProduct[] {
-    return [
-      {
-        "productId":2,
-          "productName":"Garden Cart",
-          "productCode":"GDN-0023",
-          "releasedate":"March 18, 2016",
-          "description":"15 gallon capacity rolling garden",
-          "price":20.25,
-          "starRating":4.2,
-          "imageurl":"assets/car.jpg"
-      },
-      {
-        "productId":5,
-          "productName":"Hammer",
-          "productCode":"TBX-0048",
-          "releasedate":"May 21, 2016",
-          "description":"Curved claw steel hammer",
-          "price":8.9,
-          "starRating":4.8,
-          "imageurl":"assets/hammer.png"
-      },
-      {
-        "productId":2,
-          "productName":"Garden Cart",
-          "productCode":"GDN-0023",
-          "releasedate":"March 18, 2016",
-          "description":"15 gallon capacity rolling garden",
-          "price":20.25,
-          "starRating":4.2,
-          "imageurl":"assets/car.jpg"
-      },
-      {
-        "productId":5,
-          "productName":"Hammer",
-          "productCode":"TBX-0048",
-          "releasedate":"May 21, 2016",
-          "description":"Curved claw steel hammer",
-          "price":8.9,
-          "starRating":4.8,
-          "imageurl":"assets/hammer.png"
-      },
-      {
-        "productId":2,
-          "productName":"Garden Cart",
-          "productCode":"GDN-0023",
-          "releasedate":"March 18, 2016",
-          "description":"15 gallon capacity rolling garden",
-          "price":20.25,
-          "starRating":4.2,
-          "imageurl":"assets/car.jpg"
-      },
-   
-  ]
+  constructor(private http:HttpClient) { }
+
+  getProductsData():Observable<IProduct[]>{
+    return this.http.get<IProduct[]>(this.url)
+    .pipe(tap(data=> console.log('All : ',JSON.stringify(data))),
+  catchError(this.handleError));
   }
+
+
+  private handleError(err: HttpErrorResponse)
+  {
+    let errorMessage = '';
+    if(err.error instanceof ErrorEvent)
+    {
+      errorMessage=`An error occured: ${err.error.message}`;
+    }
+    else
+    {
+      errorMessage=`Server return code : ${err.status}, error message is : ${err.message}`;
+    }
+    console.log(errorMessage);
+
+    return throwError(errorMessage);
+   
+  }
+
 }
